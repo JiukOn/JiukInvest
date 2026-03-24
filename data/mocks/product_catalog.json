@@ -1,0 +1,134 @@
+[
+  {
+    "product_id": "PROD001",
+    "name": "Poupança Tradicional",
+    "category": "Poupança",
+    "risk_level": "Baixo",
+    "risk_score": 0.01,
+    "min_investment": 1.0,
+    "expected_annual_return": 6.17,
+    "liquidity": "D+0",
+    "description": "Investimento mais tradicional, isento de Imposto de Renda. Rendimento de 0,5% a.m + TR."
+  },
+  {
+    "product_id": "PROD002",
+    "name": "CDB Pós-Fixado 110% CDI",
+    "category": "CDB",
+    "risk_level": "Baixo",
+    "risk_score": 0.03,
+    "min_investment": 100.0,
+    "expected_annual_return": 11.55,
+    "liquidity": "D+0",
+    "description": "Certificado de Depósito Bancário com liquidez diária, ideal para reserva de emergência e caixa."
+  },
+  {
+    "product_id": "PROD003",
+    "name": "LCI 95% CDI",
+    "category": "LCI",
+    "risk_level": "Baixo",
+    "risk_score": 0.03,
+    "min_investment": 1000.0,
+    "expected_annual_return": 9.97,
+    "liquidity": "D+90",
+    "description": "Letra de Crédito Imobiliário com isenção de IR para pessoa física. Excelente para horizontes de curto a médio prazo."
+  },
+  {
+    "product_id": "PROD004",
+    "name": "Tesouro Selic 2029",
+    "category": "Tesouro Direto",
+    "risk_level": "Baixo",
+    "risk_score": 0.01,
+    "min_investment": 135.0,
+    "expected_annual_return": 10.50,
+    "liquidity": "D+1",
+    "description": "Título público pós-fixado indexado à taxa básica de juros (Selic). Altíssima segurança."
+  },
+  {
+    "product_id": "PROD005",
+    "name": "Fundo DI Referenciado",
+    "category": "Fundos DI",
+    "risk_level": "Baixo",
+    "risk_score": 0.04,
+    "min_investment": 50.0,
+    "expected_annual_return": 10.40,
+    "liquidity": "D+0",
+    "description": "Fundo de renda fixa focado em acompanhar a variação do CDI, com taxa de administração de 0,5% a.a."
+  },
+  {
+    "product_id": "PROD006",
+    "name": "Tesouro IPCA+ 2035",
+    "category": "Tesouro Direto",
+    "risk_level": "Médio",
+    "risk_score": 0.15,
+    "min_investment": 45.0,
+    "expected_annual_return": 12.00,
+    "liquidity": "D+1",
+    "description": "Título público com rentabilidade atrelada à inflação (IPCA) acrescida de uma taxa de juros fixa (+6,0% a.a.)."
+  },
+  {
+    "product_id": "PROD007",
+    "name": "Previdência PGBL Fixa",
+    "category": "Previdência Privada",
+    "risk_level": "Baixo",
+    "risk_score": 0.04,
+    "min_investment": 500.0,
+    "expected_annual_return": 9.50,
+    "liquidity": "D+15",
+    "description": "Plano de previdência para aposentadoria. Permite dedução de até 12% da renda bruta anual no IRPF."
+  },
+  {
+    "product_id": "PROD008",
+    "name": "Fundo Multimercado Macro",
+    "category": "Fundos Multimercado",
+    "risk_level": "Médio",
+    "risk_score": 0.25,
+    "min_investment": 1000.0,
+    "expected_annual_return": 14.50,
+    "liquidity": "D+30",
+    "description": "Fundo que aloca recursos em diversas classes de ativos (juros, câmbio, bolsa) buscando rentabilidade superior ao CDI."
+  },
+  {
+    "product_id": "PROD009",
+    "name": "Kinea Rendimentos Imobiliários (KNCR11)",
+    "category": "Fundos Imobiliários",
+    "risk_level": "Alto",
+    "risk_score": 0.40,
+    "min_investment": 105.0,
+    "expected_annual_return": 11.20,
+    "liquidity": "D+2",
+    "description": "Fundo Imobiliário (FII) de papel, majoritariamente investido em CRIs atrelados ao CDI. Isento de IR nos dividendos mensais."
+  },
+  {
+    "product_id": "PROD010",
+    "name": "ETF iShares Ibovespa (BOVA11)",
+    "category": "Ações",
+    "risk_level": "Alto",
+    "risk_score": 0.75,
+    "min_investment": 130.0,
+    "expected_annual_return": 15.00,
+    "liquidity": "D+2",
+    "description": "Cota do fundo de índice (ETF) que busca replicar o desempenho da carteira teórica do índice Ibovespa."
+  },
+  {
+    "product_id": "PROD011",
+    "name": "Itaú Unibanco PN (ITUB4)",
+    "category": "Ações",
+    "risk_level": "Alto",
+    "risk_score": 0.65,
+    "min_investment": 35.0,
+    "expected_annual_return": 16.50,
+    "liquidity": "D+2",
+    "description": "Ações preferenciais do maior banco privado do Brasil. Foco em crescimento de capital e recebimento de proventos."
+  },
+  {
+    "product_id": "PROD012",
+    "name": "COE Autocall S&P 500",
+    "category": "COE",
+    "risk_level": "Médio",
+    "risk_score": 0.28,
+    "min_investment": 5000.0,
+    "expected_annual_return": 18.00,
+    "liquidity": "Vencimento",
+    "description": "Certificado de Operações Estruturadas com capital protegido e rentabilidade atrelada a alta do índice S&P 500, prazo de 3 anos."
+  }
+]

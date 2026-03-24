@@ -42,7 +42,8 @@ uvicorn main:app --reload --port 8000
 
 A API estará operacional recebendo conexões em http://localhost:8000.
 
-2. Levantando a Aplicação Client-Side (Frontend)
+### 2. Levantando a Aplicação Client-Side (Frontend)
+
 Em um segundo terminal, a partir da raiz do projeto, instale as dependências e inicie o servidor de desenvolvimento:
 
 ```bash

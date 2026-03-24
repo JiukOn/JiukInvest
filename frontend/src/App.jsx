@@ -1,121 +1,103 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React from 'react';
+import Header from './components/Header';
+import NewClientForm from './components/NewClientForm';
+import ReportDisplay from './components/ReportDisplay';
+import AllocationPieChart from './components/charts/AllocationPieChart';
+import EvolutionBarChart from './components/charts/EvolutionBarChart';
+import ClientSelector from './components/ClientSelector';
+import StatusTimeline from './components/StatusTimeline';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isGenerating, setIsGenerating] = React.useState(false);
+  const [showResults, setShowResults] = React.useState(false);
+  const [currentStepIndex, setCurrentStepIndex] = React.useState(0);
+  const [formData, setFormData] = React.useState(null);
+
+  const handleGenerateStrategy = (data) => {
+    console.log('Form data submitted:', data);
+    setFormData(data);
+    setIsGenerating(true);
+    setShowResults(false);
+    setCurrentStepIndex(0);
+    
+    const interval = setInterval(() => {
+      setCurrentStepIndex(prev => {
+        if(prev >= 4) {
+          clearInterval(interval);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 800);
+
+    setTimeout(() => {
+      setIsGenerating(false);
+      setShowResults(true);
+    }, 3200);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app-container">
+      <Header />
+      
+      <main className="container main-grid">
+        <section className="input-section glass-panel">
+          <div className="section-header">
+            <h2>Perfil do Cliente</h2>
+            <p>Preencha os dados do cliente para iniciar a análise</p>
+          </div>
+          
+          <ClientSelector onSelect={(data) => setFormData(data)} />
+          
+          <div className="placeholder-content" style={{ padding: 0, border: 'none', background: 'transparent' }}>
+            <NewClientForm 
+              onSubmit={handleGenerateStrategy} 
+              isGenerating={isGenerating} 
+              initialData={formData}
+            />
+          </div>
 
-      <div className="ticks"></div>
+          {isGenerating && <StatusTimeline currentStepIndex={currentStepIndex} />}
+        </section>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        <section className="output-section">
+          {!showResults ? (
+            <div className="glass-panel output-card initial-state">
+              <div className="empty-state">
+                <div className="pulse-circle"></div>
+                <h3>Aguardando Dados</h3>
+                <p>Preencha o perfil ao lado e envie para ver a análise e recomendação de portfólio da IA.</p>
+              </div>
+            </div>
+          ) : (
+            <div className="results-dashboard fade-in">
+              <ReportDisplay />
+              <div className="charts-grid">
+                <AllocationPieChart 
+                  data={[
+                    { name: 'Tesouro Direto', value: 30 },
+                    { name: 'CDB Pos-Fixado', value: 40 },
+                    { name: 'Ações BR', value: 15 },
+                    { name: 'FIIs', value: 15 }
+                  ]} 
+                />
+                <EvolutionBarChart 
+                  data={[
+                    { year: 2024, value: 100000 },
+                    { year: 2025, value: 136000 },
+                    { year: 2026, value: 172000 },
+                    { year: 2027, value: 208000 },
+                    { year: 2028, value: 244000 }
+                  ]} 
+                />
+              </div>
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;

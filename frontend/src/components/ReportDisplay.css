@@ -1,0 +1,81 @@
+.report-container {
+  padding: 2rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  width: 100%;
+}
+
+.report-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.report-icon {
+  color: var(--accent-primary);
+}
+
+.report-header h2 {
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.report-content {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.report-content h3 {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.report-content h4 {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.report-content p {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.report-content ul, 
+.report-content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.report-content li {
+  margin-bottom: 0.5rem;
+}
+
+.report-content strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.report-content blockquote {
+  border-left: 4px solid var(--accent-primary);
+  background: var(--accent-bg);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+  color: var(--accent-primary);
+  font-style: italic;
+}
+
+.report-content blockquote strong {
+  color: var(--accent-primary);
+}

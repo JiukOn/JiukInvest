@@ -31,3 +31,4 @@ MANIFEST
 .DS_Store
 .vscode/
 .idea/
+.agents/
