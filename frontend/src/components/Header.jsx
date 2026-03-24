@@ -8,9 +8,9 @@ const Header = () => {
       <div className="container header-content">
         <div className="logo-section">
           <div className="logo-icon-wrapper">
-            <LineChart className="logo-icon" size={24} />
+            <img src="/favicon.svg" alt="JiukInvest Logo" width="24" height="24" className="logo-icon spin" style={{animationDuration: '15s'}} />
           </div>
-          <h1 className="logo-text">GenAI <span className="logo-accent">Copilot</span></h1>
+          <h1 className="logo-text">Jiuk<span className="logo-accent">Invest</span></h1>
         </div>
         
         <nav className="header-nav">
