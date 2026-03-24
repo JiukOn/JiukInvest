@@ -95,3 +95,21 @@ p {
   margin: 0 auto;
   padding: 0 1.5rem;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #pdf-report-area, #pdf-report-area * {
+    visibility: visible;
+  }
+  #pdf-report-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .dashboard-actions {
+    display: none !important;
+  }
+}

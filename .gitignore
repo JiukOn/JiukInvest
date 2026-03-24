@@ -32,3 +32,4 @@ MANIFEST
 .vscode/
 .idea/
 .agents/
+.env.example

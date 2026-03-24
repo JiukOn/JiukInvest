@@ -8,33 +8,56 @@ import ClientSelector from './components/ClientSelector';
 import StatusTimeline from './components/StatusTimeline';
 import './App.css';
 
+import { generateReport } from './services/api';
+import { exportToPdf } from './utils/exportPdf';
+
 function App() {
   const [isGenerating, setIsGenerating] = React.useState(false);
   const [showResults, setShowResults] = React.useState(false);
   const [currentStepIndex, setCurrentStepIndex] = React.useState(0);
   const [formData, setFormData] = React.useState(null);
+  const [reportData, setReportData] = React.useState(null);
 
-  const handleGenerateStrategy = (data) => {
+  const handleGenerateStrategy = async (data) => {
     console.log('Form data submitted:', data);
     setFormData(data);
     setIsGenerating(true);
     setShowResults(false);
     setCurrentStepIndex(0);
+    setReportData(null);
     
     const interval = setInterval(() => {
       setCurrentStepIndex(prev => {
-        if(prev >= 4) {
-          clearInterval(interval);
-          return prev;
-        }
+        if(prev >= 4) { return prev; }
         return prev + 1;
       });
-    }, 800);
+    }, 1500);
 
-    setTimeout(() => {
-      setIsGenerating(false);
+    try {
+      const result = await generateReport(data);
+      clearInterval(interval);
+      setCurrentStepIndex(5);
+      
+      if (result.status === "error" || result.status === "restricted") {
+        setReportData({
+           markdown_text: `## AVISO DO SISTEMA\n\n**Status:** ${result.status.toUpperCase()}\n\n**Mensagem Oficial:** ${result.message}\n\n**Motivo:** ${result.reason || "Regra local restritiva."}`,
+           charts: { allocation_pie: [], evolution_bar: [] }
+        });
+      } else {
+        setReportData(result.report);
+      }
+      
       setShowResults(true);
-    }, 3200);
+    } catch (error) {
+      clearInterval(interval);
+      setReportData({
+         markdown_text: `## Erro de Comunicação\n\nFalha ao interagir com o LangGraph.\n\nDetalhes: ${error.message}`,
+         charts: { allocation_pie: [], evolution_bar: [] }
+      });
+      setShowResults(true);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -71,24 +94,22 @@ function App() {
               </div>
             </div>
           ) : (
-            <div className="results-dashboard fade-in">
-              <ReportDisplay />
+            <div className="results-dashboard fade-in" id="pdf-report-area">
+              <div className="dashboard-actions" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+                 <button className="primary-button" onClick={exportToPdf} style={{ padding: '0.6rem 1.2rem', gap: '8px', display: 'flex', alignItems: 'center' }}>
+                    Exportar Relatório PDF
+                 </button>
+              </div>
+              <ReportDisplay markdown={reportData?.markdown_text} />
               <div className="charts-grid">
                 <AllocationPieChart 
-                  data={[
-                    { name: 'Tesouro Direto', value: 30 },
-                    { name: 'CDB Pos-Fixado', value: 40 },
-                    { name: 'Ações BR', value: 15 },
-                    { name: 'FIIs', value: 15 }
+                  data={reportData?.charts?.allocation_pie?.length ? reportData.charts.allocation_pie : [
+                    { name: 'Sem Dados de Alocação', value: 100 }
                   ]} 
                 />
                 <EvolutionBarChart 
-                  data={[
-                    { year: 2024, value: 100000 },
-                    { year: 2025, value: 136000 },
-                    { year: 2026, value: 172000 },
-                    { year: 2027, value: 208000 },
-                    { year: 2028, value: 244000 }
+                  data={reportData?.charts?.evolution_bar?.length ? reportData.charts.evolution_bar : [
+                    { year: new Date().getFullYear(), value: 0 }
                   ]} 
                 />
               </div>

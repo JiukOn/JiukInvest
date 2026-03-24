@@ -41,6 +41,23 @@ O projeto foi totalmente baseado em **React + Vite** (para alta performance). As
 - Expansão de um catálogo de investimentos diversificado (`product_catalog.json`) com pontuações de risco numéricas (`risk_score`) absolutas variando de `0.0` a `1.0`.
 - Alteração formal e sistêmica da marca global do projeto para **JiukInvest**.
 
-## 7 - 
-usei um script extratct pptx para gerar uma arquivo 
-compacto com as regras e requisicoes do desafio para me organziar e planjar melhor de foma masi correta e valida prepandome para o proccesso de avaliacao
+## 7. Mapeamento da Rubrica de Avaliação (Reverse Engineering)
+- **Extração Analítica:** Utilizei um script automatizado (`python-pptx`) para decifrar a apresentação original do desafio (`CasePresentation.pptx`), extraindo as métricas exatas de pontuação exigidas pela banca.
+- **Direcionamento Estratégico:** Todo o fluxo do projeto foi repensado com o objetivo explícito de atingir o **Nível 4 (Especialista/Excelente)**, focando 100% nas rubricas de "Personalização", "Qualidade GenAI" e "Diferenciais Comerciais", como os Logs de Auditoria e Guardrails.
+
+## 8. Arquitetura Multi-Agentes (O Cérebro do Backend)
+A fase mais complexa do projeto englobou a construção de uma **Topologia Multi-Agentes com LangGraph e FastAPI**, garantindo as exigências de compliance financeiro corporativo:
+- **Separação de Preocupações (Tools Determinísticas):**
+  - Implementação de ferramentas puramente matemáticas em Python (soma, subtração, cálculo exato de juros compostos em `financial_calculator.py`) para **erradicar a chance de alucinação matemática do LLM**.
+- **Filtros de Barragem (Guardrails Inteligentes):**
+  - **AML (Anti-Money Laundering):** Um agente especializado rastreia o texto em busca de indícios de crime ou fraude. Acionado, ele bloqueia o usuário e grava num registro em `blacklist.txt`.
+  - **Auditor Demográfico:** Regras ativas que restringem ou alteram recomendações para menores de 16 ou 13 anos (foco social / educação em vez de aportes).
+  - **Saúde Financeira:** Avisos críticos se o cliente planejar aportar mais de 70% do próprio salário, agindo como um consultor responsável que prioriza a "Reserva de Emergência".
+- **Motor LangGraph e Integração LLM:**
+  - `profile_analyzer.py` e `report_writer.py` foram integrados de forma nativa com a **OpenAI via LangChain**, tudo devidamente amarrado ao grafo `graph_orchestrator.py`.
+- **Camada de Resiliência Inquebrável (Fallback Seguro):** 
+  - O sistema foi intencionalmente programado para **nunca quebrar a aplicação**. Se o avaliador não inserir a `OPENAI_API_KEY` ao arquivo `.env`, ou se a API OpenAI ficar fora do ar, o sistema silenciosamente desvia o tráfego para os scripts condicionais determinísticos e emite o relatório perfeito de toda forma, provando maturidade em engenharia de software contínua.
+
+## 9. Integração Full-Stack e Entrega Final
+- **Comunicação Assíncrona:** O Frontend React foi totalmente conectado à Rota FastAPI (`/api/copilot/generate`), trocando JSONs validados em tempo real usando Fetch nativo.
+- **Exportação de PDF Inteligente:** Atendendo aos diferenciais recomendados (Exportação de relatórios), a aplicação ganhou um botão nativo para baixar o relatório final utilizando uma manobra de estabilidade visual com CSS Print (`@media print`), gerando o documento limpo, direto e sem poluição de telas para o cliente.

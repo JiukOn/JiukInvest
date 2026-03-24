@@ -33,7 +33,7 @@ class AssetPreferences(BaseModel):
 
 class ClientData(BaseModel):
     name: str = Field(...)
-    age: int = Field(..., ge=18)
+    age: int = Field(..., ge=0)
     knowledge_level: KnowledgeLevel = Field(...)
     has_invested_before: bool = Field(...)
     past_investments: Optional[str] = Field(None)
@@ -54,4 +54,9 @@ class AgentState(TypedDict):
     final_report: Optional[FinalReport]
     status_code: int
     retry_count: int
+    is_blacklisted: bool
+    blacklist_reason: Optional[str]
+    demographic_category: str
+    financial_health_warning: bool
+    math_operations_log: List[str]
     audit_logs: Annotated[List[str], operator.add]
