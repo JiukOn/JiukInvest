@@ -19,18 +19,34 @@
 
 .section-header {
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border-subtle);
   padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+}
+
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 40px;
+  height: 1px;
+  background: var(--accent-primary);
+  box-shadow: 0 0 8px var(--accent-glow);
 }
 
 .section-header h2 {
-  font-size: 1.25rem;
-  margin-bottom: 0.25rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.01em;
 }
 
 .section-header p {
-  font-size: 0.875rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
+  font-weight: 400;
 }
 
 .output-section {
@@ -49,7 +65,7 @@
 .initial-state {
   align-items: center;
   justify-content: center;
-  min-height: 400px;
+  min-height: 420px;
   text-align: center;
 }
 
@@ -57,18 +73,41 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  max-width: 300px;
+  gap: 1.25rem;
+  max-width: 320px;
+}
+
+.empty-state h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.empty-state p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
 }
 
 .pulse-circle {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  background: var(--bg-surface-elevated);
-  border: 2px dashed var(--border-focus);
-  animation: pulse 3s infinite ease-in-out;
-  margin-bottom: 1rem;
+  background: rgba(139, 92, 246, 0.06);
+  border: 2px dashed rgba(139, 92, 246, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse-glow 3s infinite ease-in-out;
+  position: relative;
+}
+
+.pulse-circle::after {
+  content: '✨';
+  font-size: 1.5rem;
+  animation: spin-slow 8s linear infinite;
 }
 
 @keyframes pulse {
@@ -83,4 +122,31 @@
   color: var(--text-muted);
   border: 1px dashed var(--border-subtle);
   border-radius: 8px;
+}
+
+.dashboard-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.pdf-export-btn {
+  width: auto;
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(157, 78, 221, 0.3);
+  transition: all 0.3s ease;
+}
+
+.pdf-export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(157, 78, 221, 0.45);
 }

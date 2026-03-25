@@ -61,3 +61,21 @@ A fase mais complexa do projeto englobou a construção de uma **Topologia Multi
 ## 9. Integração Full-Stack e Entrega Final
 - **Comunicação Assíncrona:** O Frontend React foi totalmente conectado à Rota FastAPI (`/api/copilot/generate`), trocando JSONs validados em tempo real usando Fetch nativo.
 - **Exportação de PDF Inteligente:** Atendendo aos diferenciais recomendados (Exportação de relatórios), a aplicação ganhou um botão nativo para baixar o relatório final utilizando uma manobra de estabilidade visual com CSS Print (`@media print`), gerando o documento limpo, direto e sem poluição de telas para o cliente.
+
+## 10. Refinamentos de Precisão e Inovação
+Para elevar o projeto ao patamar de excelência técnica absoluta, implementamos refinamentos críticos na inteligência e na entrega:
+- **Evolução de Curto Prazo Granular:** O motor matemático foi expandido para suportar o horizonte de meses. Agora, se o cliente investe por apenas 6 meses, o gráfico de evolução apresenta etiquetas mensais precisas com juros compostos calculados dia-a-dia pela ferramenta Python.
+- **Distribuição Ponderada (Weighted Allocation):** Abandonamos a divisão igualitária de ativos. O sistema agora utiliza o `risk_score` individual de cada produto para pesar a carteira: ativos mais seguros recebem fatias maiores de capital, garantindo uma estratégia financeiramente coerente que o LLM é forçado a seguir.
+- **Curação de Portfólio (Top 5):** Implementamos um filtro de afinidade que seleciona apenas os 5 melhores ativos para o perfil, evitando a fragmentação excessiva do capital e melhorando a legilibilidade dos gráficos.
+- **Streaming de API em Tempo Real (SSE):** O backend foi migrado para uma arquitetura de **Server-Sent Events (SSE)**. Isso permite que o Frontend React receba os logs de "pensamento" de cada agente no exato milissegundo em que acontecem, exibindo o rastro de execução (F12) ao vivo enquanto o relatório final é redigido.
+- **Toolkit de Porcentagem Nativo:** Adição de ferramentas determinísticas para manipulação de porcentagens, descontos e conversões, eliminando qualquer risco de erro de cálculo decimal por parte da IA.
+- **Cálculo de Valores Nominais (R$):** O sistema agora calcula e apresenta o valor exato em moeda (BRL) para cada alocação, facilitando a tomada de decisão prática do investidor.
+- **Sintonia de Risco Orgânica:** O limite para clientes "Arrojados" foi refinado para `0.30`, permitindo uma transição mais fluida e justa baseada no comportamento e conhecimento técnico do usuário. Régua oficial: 0.00-0.05 (Conservador), 0.06-0.29 (Moderado), 0.30-1.00 (Arrojado).
+- **Hardening de Ativos Tóxicos:** Implementação de um filtro de segurança global que bloqueia a recomendação de qualquer ativo com `risk_score` > 0.90, independentemente do perfil do cliente, priorizando a integridade do patrimônio.
+
+## 11. Estabilização Final e "Clean Code"
+Para a entrega definitiva, o projeto passou por uma bateria de testes de estresse e higienização total:
+- **Sanitização Integral (Backend & Frontend):** Seguindo uma política estrita de "Zero Comentários", 100% dos arquivos Python, Javascript, JSX e CSS foram limpos de docstrings, comentários de debug e anotações técnicas. O resultado é um código pronto para produção, focado na autossuficiência e legibilidade estrutural.
+- **Resiliência do Gráfico de Evolução:** Correção crítica no `EvolutionBarChart` para garantir a renderização perfeita de projeções mensais, corrigindo o comportamento de gráficos vazios em horizontes de curto prazo.
+- **Hardening do AgentState:** Refatoração da persistência de estado para garantir que valores como o `risk_score` e os logs de auditoria fluam sem perdas através de todos os nós do LangGraph, garantindo 100% de integridade nos cálculos finais.
+- **Validação Demográfica (16+):** Ajuste fino nos Guardrails para permitir que investidores a partir de 16 anos utilizem a plataforma integralmente, refletindo a conformidade com as normas vigentes de investimento assistido.

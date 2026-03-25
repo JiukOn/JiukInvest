@@ -8,24 +8,20 @@ const Header = () => {
       <div className="container header-content">
         <div className="logo-section">
           <div className="logo-icon-wrapper">
-            <img src="/favicon.svg" alt="JiukInvest Logo" width="24" height="24" className="logo-icon spin" style={{animationDuration: '15s'}} />
+            <img src="/favicon.svg" alt="JiukInvest Logo" width="22" height="22" className="logo-icon spin" style={{animationDuration: '18s'}} />
           </div>
           <h1 className="logo-text">Jiuk<span className="logo-accent">Invest</span></h1>
+          <span className="header-badge">AI Online</span>
         </div>
-        
-        <nav className="header-nav">
-          <a href="#" className="nav-link active">
-            <LayoutDashboard size={18} />
-            <span>Workspace</span>
-          </a>
-        </nav>
+
+        <nav className="header-nav" />
 
         <div className="user-profile">
           <div className="user-info">
             <span className="user-name">Manager Portal</span>
             <span className="user-role">Wealth Management</span>
           </div>
-          <UserCircle size={32} className="user-avatar" />
+          <UserCircle size={30} className="user-avatar" />
         </div>
       </div>
     </header>

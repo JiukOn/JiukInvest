@@ -17,13 +17,13 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const AllocationPieChart = ({ data }) => {
-  if (!data || data.length === 0) return <div className="chart-empty">No allocation data</div>;
+  if (!data || data.length === 0) return <div className="chart-empty">Sem projeção calculada</div>;
 
   return (
     <div className="chart-container">
-      <h3 className="chart-title">Recommended Allocation</h3>
-      <div className="chart-wrapper pie-wrapper">
-        <ResponsiveContainer width="100%" height="100%">
+      <h3 className="chart-title">Alocação Recomendada</h3>
+      <div className="chart-wrapper pie-wrapper" style={{ minHeight: '280px', minWidth: '100%', width: '100%', height: '280px' }}>
+        <ResponsiveContainer width="99%" height={280}>
           <PieChart>
             <Pie
               data={data}

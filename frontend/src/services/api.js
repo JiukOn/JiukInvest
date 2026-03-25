@@ -61,18 +61,11 @@ export const fetchMockProfiles = async () => {
 };
 
 export const generateReport = async (payload) => {
-  const response = await fetch('http://localhost:8000/api/copilot/generate', {
+  return await fetch('http://localhost:8000/api/copilot/generate', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ payload })
   });
-  
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.detail || 'Erro ao comunicar com a API do Copilot');
-  }
-  
-  return await response.json();
 };

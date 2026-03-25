@@ -25,6 +25,11 @@ A capacidade de aporte mensal de **R$ 3.000,00** combinada a um capital inicial 
 const ReportDisplay = ({ markdown = mockMarkdown }) => {
   return (
     <div className="report-container glass-panel">
+      <div className="print-only-header" style={{ display: 'none', marginBottom: '20px', borderBottom: '2px solid #9d4edd', paddingBottom: '10px' }}>
+         <h1 style={{ color: '#9d4edd', margin: 0, fontSize: '24px' }}>JiukInvest</h1>
+         <p style={{ color: '#444', margin: 0, fontSize: '12px', fontWeight: 'bold' }}>Relatório Oficial de Análise Digital via GenAI - Nível Especialista</p>
+         <p style={{ color: '#666', margin: 0, fontSize: '10px' }}>Documento Emitido Eletronicamente via Múltiplos Agentes Autônomos</p>
+      </div>
       <div className="report-header">
         <FileText size={20} className="report-icon" />
         <h2>Relatório Estratégico da IA</h2>

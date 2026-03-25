@@ -1,36 +1,58 @@
 .profile-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
+}
+
+.form-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .form-group-row {
   display: flex;
-  gap: 1rem;
+  gap: 0.85rem;
+  flex-wrap: wrap;
 }
 
 .form-group-row .form-group {
   flex: 1;
+  min-width: 120px;
 }
+
+.form-group.flex-2 { flex: 2; }
+.form-group.flex-1 { flex: 1; }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .form-group label {
-  font-size: 0.875rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--text-secondary);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  line-height: 1.3;
 }
 
 .icon-inline {
   color: var(--accent-primary);
-  opacity: 0.8;
+  opacity: 0.75;
+  flex-shrink: 0;
 }
 
 .profile-form input[type="number"],
@@ -38,20 +60,21 @@
 .profile-form textarea,
 .modern-select {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.65rem 0.9rem;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   color: var(--text-primary);
-  font-family: inherit;
-  font-size: 0.95rem;
-  transition: all 0.2s;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
 }
 
-.profile-form textarea {
-  resize: vertical;
-  min-height: 80px;
+.profile-form input::placeholder,
+.profile-form textarea::placeholder {
+  color: var(--text-muted);
+  font-size: 0.82rem;
 }
 
 .profile-form input[type="number"]:focus,
@@ -59,7 +82,14 @@
 .profile-form textarea:focus,
 .modern-select:focus {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px var(--accent-glow);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: var(--bg-surface-hover);
+}
+
+.profile-form textarea {
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.55;
 }
 
 .modern-select {
@@ -68,51 +98,78 @@
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 2.5rem;
+  cursor: pointer;
 }
 
-.form-divisor {
+.modern-select option {
+  background: var(--bg-surface-elevated);
+  color: var(--text-primary);
+}
+
+.form-divider {
   height: 1px;
   background: var(--border-subtle);
-  margin: 0.5rem 0;
+  margin: 0.25rem 0;
 }
 
 .radio-group {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.4rem;
   background: var(--bg-surface-elevated);
-  padding: 4px;
-  border-radius: 8px;
+  padding: 3px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
 }
 
 .radio-pill {
   flex: 1;
   text-align: center;
-  padding: 0.5rem;
+  padding: 0.45rem;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 500;
+  font-family: var(--font-display);
   cursor: pointer;
-  color: var(--text-secondary);
-  transition: all 0.2s;
+  color: var(--text-muted);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
 }
 
-.radio-pill input[type="radio"] {
-  display: none;
-}
+.radio-pill input[type="radio"] { display: none; }
 
 .radio-pill.selected {
-  background: var(--accent-primary);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
   color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.checkbox-group {
+  min-width: 140px;
+}
+
+.form-group-row.checkbox-row {
+  flex-wrap: wrap;
+  gap: 0.6rem;
 }
 
 .checkbox-container {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary) !important;
+  user-select: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-elevated);
+  transition: all 0.2s ease;
+}
+
+.checkbox-container:hover {
+  border-color: var(--border-focus);
   color: var(--text-primary) !important;
 }
 
@@ -125,10 +182,11 @@
 }
 
 .checkmark {
-  height: 20px;
-  width: 20px;
-  background-color: var(--bg-surface-elevated);
-  border: 1px solid var(--border-subtle);
+  height: 18px;
+  width: 18px;
+  flex-shrink: 0;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-focus);
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -136,74 +194,23 @@
   transition: all 0.2s;
 }
 
-.checkbox-container:hover input ~ .checkmark {
-  border-color: var(--accent-primary);
-}
-
 .checkbox-container input:checked ~ .checkmark {
-  background-color: var(--accent-primary);
-  border-color: var(--accent-primary);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border-color: transparent;
 }
 
-.checkmark:after {
+.checkmark::after {
   content: "";
   display: none;
   width: 4px;
-  height: 9px;
+  height: 8px;
   border: solid white;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
   margin-bottom: 2px;
 }
 
-.checkbox-container input:checked ~ .checkmark:after {
-  display: block;
-}
-
-.generate-btn {
-  margin-top: 1rem;
-  padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 14px var(--accent-glow);
-}
-
-.generate-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px var(--accent-glow);
-}
-
-.generate-btn:active {
-  transform: translateY(0);
-}
-
-.generate-btn.loading {
-  opacity: 0.8;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* New Styles for Dynamic Form Elements */
-.form-section-title {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--accent-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
+.checkbox-container input:checked ~ .checkmark::after { display: flex; }
 
 .slide-container {
   display: flex;
@@ -211,15 +218,27 @@
   gap: 0.5rem;
 }
 
+.horizon-value {
+  color: var(--accent-hover);
+  font-family: var(--font-display);
+}
+
 .modern-slider {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 6px;
-  background: var(--bg-surface-elevated);
+  height: 5px;
+  background: linear-gradient(
+    to right,
+    var(--accent-primary) 0%,
+    var(--accent-primary) var(--pct, 12%),
+    var(--bg-surface-elevated) var(--pct, 12%),
+    var(--bg-surface-elevated) 100%
+  );
   border-radius: 4px;
   outline: none;
   border: 1px solid var(--border-subtle);
+  transition: background 0.1s;
 }
 
 .modern-slider::-webkit-slider-thumb {
@@ -228,56 +247,103 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--accent-primary);
+  background: white;
+  border: 2px solid var(--accent-primary);
   cursor: pointer;
+  box-shadow: 0 0 8px var(--accent-glow);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .modern-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-  box-shadow: 0 0 10px var(--accent-glow);
+  transform: scale(1.2);
+  box-shadow: 0 0 14px var(--accent-glow-strong);
 }
 
 .slider-labels {
   display: flex;
   justify-content: space-between;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
 }
 
 .bg-tint {
-  background: rgba(139, 92, 246, 0.05); /* Violet tint */
-  padding: 1rem;
-  border-radius: 12px;
-  border: 1px dashed var(--border-subtle);
-  margin-top: 0.5rem;
+  background: rgba(139, 92, 246, 0.04);
+  padding: 0.875rem;
+  border-radius: var(--radius-md);
+  border: 1px dashed rgba(139, 92, 246, 0.2);
+  margin-top: 0.25rem;
 }
 
 .chip-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
 }
 
 .asset-chip {
-  padding: 0.4rem 0.8rem;
+  padding: 0.35rem 0.75rem;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: 20px;
+  border-radius: 100px;
   color: var(--text-secondary);
-  font-size: 0.8rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .asset-chip:hover {
-  border-color: var(--accent-hover);
+  border-color: var(--accent-primary);
   color: var(--text-primary);
+  background: rgba(139, 92, 246, 0.08);
 }
 
 .asset-chip.active {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
-  color: #fff;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border-color: transparent;
+  color: white;
   box-shadow: 0 2px 8px var(--accent-glow);
 }
+
+.generate-btn {
+  margin-top: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-tertiary) 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px var(--accent-glow);
+  letter-spacing: 0.01em;
+}
+
+.generate-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px var(--accent-glow-strong);
+  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent-primary) 100%);
+}
+
+.generate-btn:active:not(:disabled) { transform: translateY(0); }
+
+.generate-btn:disabled,
+.generate-btn.loading {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.jumping-dots span {
+  animation: blink-dot 1.4s ease-in-out infinite;
+  display: inline-block;
+}
+.jumping-dots span:nth-child(2) { animation-delay: 0.2s; }
+.jumping-dots span:nth-child(3) { animation-delay: 0.4s; }

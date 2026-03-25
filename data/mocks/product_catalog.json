@@ -130,5 +130,60 @@
     "expected_annual_return": 18.00,
     "liquidity": "Vencimento",
     "description": "Certificado de Operações Estruturadas com capital protegido e rentabilidade atrelada a alta do índice S&P 500, prazo de 3 anos."
+  },
+  {
+    "product_id": "PROD013",
+    "name": "Fundo ESG Sustentabilidade Global",
+    "category": "Fundos ESG",
+    "risk_level": "Alto",
+    "risk_score": 0.55,
+    "min_investment": 500.0,
+    "expected_annual_return": 14.20,
+    "liquidity": "D+15",
+    "description": "Fundo alocado em empresas com alto selo de governança e sustentabilidade ambiental no mundo."
+  },
+  {
+    "product_id": "PROD014",
+    "name": "Debênture Incentivada de Energia",
+    "category": "Debêntures",
+    "risk_level": "Baixo",
+    "risk_score": 0.15,
+    "min_investment": 1000.0,
+    "expected_annual_return": 12.80,
+    "liquidity": "Vencimento",
+    "description": "Isento de Imposto de Renda. Emissão de companhia sólida do setor elétrico."
+  },
+  {
+    "product_id": "PROD015",
+    "name": "BDR Apple (AAPL34)",
+    "category": "Ações Internacionais",
+    "risk_level": "Alto",
+    "risk_score": 0.85,
+    "min_investment": 50.0,
+    "expected_annual_return": 22.00,
+    "liquidity": "D+2",
+    "description": "Exposição direta em reais aos lucros da Apple nos Estados Unidos. Alta volatilidade cambial."
+  },
+  {
+    "product_id": "PROD016",
+    "name": "ETF S&P 500 (IVVB11)",
+    "category": "Ações Internacionais",
+    "risk_level": "Médio",
+    "risk_score": 0.65,
+    "min_investment": 200.0,
+    "expected_annual_return": 16.50,
+    "liquidity": "D+2",
+    "description": "Fundo de índice passivo comprado nas 500 maiores empresas dos Estados Unidos. Cobre inflação norte-americana."
+  },
+  {
+    "product_id": "PROD017",
+    "name": "Fundo Multimercado Macro Oportunidades",
+    "category": "Fundos Multimercado",
+    "risk_level": "Médio-Alto",
+    "risk_score": 0.35,
+    "min_investment": 5000.0,
+    "expected_annual_return": 13.10,
+    "liquidity": "D+45",
+    "description": "Gestão ativa apostando em juros e câmbio para bater o CDI ao longo do tempo independentemente do cenário."
   }
 ]

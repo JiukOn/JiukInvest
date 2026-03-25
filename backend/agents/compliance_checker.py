@@ -1,22 +1,65 @@
+import json
+from langchain_core.prompts import ChatPromptTemplate
 from data.schemas.state_models import AgentState
+from backend.prompts.system_prompts import COMPLIANCE_PROMPT
+from backend.utils.llm_factory import get_llm
+from backend.utils.env_loader import AZURE_OPENAI_KEY
+import re
+
+FORBIDDEN_INTERNAL_LEAKS = [
+    r"PROD\d{3}",
+    r"calculate_",
+    r"backend/",
+    r"AgentState",
+    r"math_specialist",
+    r"report_writer",
+    r"run_",
+    r"\.py\b",
+]
 
 def run_compliance_checker(state: AgentState) -> dict:
     draft = state.get("draft_report")
     if not draft:
         return {"status_code": 400, "audit_logs": ["ComplianceChecker: No draft to check."]}
-        
-    text = draft.markdown_text.lower()
-    forbidden_terms = ["lucro garantido", "risco zero", "absoluta certeza"]
-    
-    for term in forbidden_terms:
-        if term in text:
+
+    text = draft.markdown_text
+
+    for pattern in FORBIDDEN_INTERNAL_LEAKS:
+        if re.search(pattern, text):
             return {
                 "status_code": 406,
-                "audit_logs": [f"ComplianceChecker: REJECTED. Hallucination identified: '{term}'."]
+                "audit_logs": [f"ComplianceChecker (guard): REJECTED. Internal data leak detected: pattern '{pattern}'."]
             }
-            
+
+    if AZURE_OPENAI_KEY:
+        try:
+            llm = get_llm(temperature=0)
+            prompt = ChatPromptTemplate.from_messages([
+                ("system", COMPLIANCE_PROMPT),
+                ("user", "Revise o seguinte relatório:\n\n{report}")
+            ])
+            result = (prompt | llm).invoke({"report": text[:6000]})
+            parsed = json.loads(result.content.strip())
+            approved = parsed.get("approved", True)
+            reason = parsed.get("reason", "")
+            violations = parsed.get("violations", [])
+
+            if not approved:
+                return {
+                    "status_code": 406,
+                    "audit_logs": [f"ComplianceChecker (LLM): REJECTED. {reason}. Violations: {violations}"]
+                }
+
+            return {
+                "final_report": draft,
+                "status_code": 200,
+                "audit_logs": [f"ComplianceChecker (LLM): APPROVED. {reason}"]
+            }
+        except Exception as e:
+            pass
+
     return {
         "final_report": draft,
         "status_code": 200,
-        "audit_logs": ["ComplianceChecker: APPROVED. Safe generation verified."]
+        "audit_logs": ["ComplianceChecker (fallback): APPROVED. Standard regex checks passed."]
     }

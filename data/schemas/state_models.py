@@ -11,10 +11,13 @@ class KnowledgeLevel(str, Enum):
 class AllocationData(BaseModel):
     name: str = Field(...)
     value: float = Field(...)
+    value_brl: float = Field(default=0.0)
 
 class EvolutionData(BaseModel):
-    year: int = Field(...)
+    year: str = Field(...)
     value: float = Field(...)
+    value_poupanca: float = Field(default=0.0)
+    value_ibov: float = Field(default=0.0)
 
 class ReportCharts(BaseModel):
     allocation_pie: List[AllocationData] = Field(...)
@@ -50,6 +53,7 @@ class AgentState(TypedDict):
     raw_input: Dict[str, Any]
     standardized_client_data: Optional[ClientData]
     matched_products: List[Dict[str, Any]]
+    risk_score: float
     draft_report: Optional[FinalReport]
     final_report: Optional[FinalReport]
     status_code: int
@@ -57,6 +61,12 @@ class AgentState(TypedDict):
     is_blacklisted: bool
     blacklist_reason: Optional[str]
     demographic_category: str
+    demographic_lifecycle_note: Optional[str]
+    personal_stability: str
     financial_health_warning: bool
+    financial_health_score: Optional[str]
+    financial_health_summary: Optional[str]
+    financial_health_recommendation: Optional[str]
     math_operations_log: List[str]
     audit_logs: Annotated[List[str], operator.add]
+    calculated_charts: Dict[str, Any]
