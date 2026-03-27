@@ -31,7 +31,6 @@ def run_profile_analyzer(state: AgentState) -> dict:
     risk_score = 0.29
     personal_stability = state.get("personal_stability", "SEM INFORMACAO")
     
-    # Guardrails Check (Parallel Flow Safety)
     is_blacklisted = state.get("is_blacklisted", False)
     demographic_cat = state.get("demographic_category", "ADULT")
     health_score = state.get("financial_health_score", "SAUDAVEL")

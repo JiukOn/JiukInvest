@@ -15,19 +15,14 @@ from backend.agents.compliance_checker import run_compliance_checker
 def should_continue_after_data(state: AgentState):
     if not state.get("standardized_client_data") or state.get("status_code") == 400:
         return END
-    # Dispara os 4 agentes em paralelo
     return ["ContextAnalyzer", "Demographics", "HealthCheck", "EmotionalAnalyzer"]
 
 
 def should_proceed_to_profile(state: AgentState):
-    """Verifica se algum guardrail barrou a execução antes de prosseguir."""
-    # AML Block
     if state.get("is_blacklisted"):
         return END
-    # Demographics Block
     if state.get("demographic_category") in ["CHILD", "TEEN"]:
         return END
-    # Health Block
     if state.get("financial_health_score") == "CRITICO":
         return END
     
@@ -35,7 +30,6 @@ def should_proceed_to_profile(state: AgentState):
 
 
 def should_retry_compliance(state: AgentState):
-    """Decide se tenta corrigir o relatório ou encerra."""
     status = state.get("status_code")
     retries = state.get("retry_count", 0)
     
@@ -49,12 +43,10 @@ def should_emit_final(state: AgentState):
 
 
 def run_guardrail_gate(state: AgentState) -> dict:
-    """Nó de sincronização que verifica se podemos prosseguir após o paralelo."""
     return {}
 
 
 def should_proceed_after_gate(state: AgentState):
-    """Decisão final após o fan-in paralelo."""
     if state.get("is_blacklisted"):
         return END
     if state.get("demographic_category") in ["CHILD", "TEEN"]:
@@ -80,16 +72,13 @@ def build_graph():
 
     graph.set_entry_point("DataOrganizer")
 
-    # Fan-out paralelo
     graph.add_conditional_edges("DataOrganizer", should_continue_after_data)
 
-    # Fan-in para o GuardrailGate
     graph.add_edge("ContextAnalyzer", "GuardrailGate")
     graph.add_edge("Demographics", "GuardrailGate")
     graph.add_edge("HealthCheck", "GuardrailGate")
     graph.add_edge("EmotionalAnalyzer", "GuardrailGate")
 
-    # Decisão de prosseguir ou barrar
     graph.add_conditional_edges("GuardrailGate", should_proceed_after_gate)
     
     graph.add_edge("ProfileAnalyzer", "MathSpecialist")

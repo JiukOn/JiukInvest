@@ -2,7 +2,6 @@ import datetime
 import math
 from typing import List, Dict, Optional
 
-# Constants for Brazil (Reference 2024-2025)
 CDI_ANNUAL = 10.75
 SELIC_ANNUAL = 10.75
 IPCA_ANNUAL = 4.50
@@ -14,10 +13,8 @@ def _monthly_rate_from_annual(annual_rate_pct: float) -> float:
         return 0.0
     return (1 + annual_rate_pct / 100.0) ** (1 / 12.0) - 1
 
-# --- Basic Math Tools ---
 
 def math_add(a: float, b: float) -> float:
-    """Retorna a soma de a e b."""
     return a + b
 
 def math_subtract(a: float, b: float) -> float:
@@ -46,7 +43,6 @@ def math_factorial(n: int) -> int:
     """Calcula o fatorial de n."""
     return math.factorial(n)
 
-# --- Sequences and Series ---
 
 def math_arithmetic_progression(a1: float, n: int, d: float) -> Dict[str, float]:
     """Calcula o n-ésimo termo (an) e a soma (Sn) de uma Progressão Aritmética."""
@@ -67,7 +63,6 @@ def math_summation(values: List[float]) -> float:
     """Retorna a somatória de uma lista de valores."""
     return sum(values)
 
-# --- Financial Tools ---
 
 def calculate_compound_interest(principal: float, monthly_contribution: float, annual_rate_pct: float, months: int) -> float:
     """Calcula o montante final de um investimento com juros compostos e aportes mensais."""

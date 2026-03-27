@@ -26,7 +26,6 @@ def run_report_writer(state: AgentState) -> dict:
                 azure_endpoint=AZURE_OPENAI_ENDPOINT,
                 api_version=AZURE_OPENAI_VERSION
             )
-            # Recupera dados contextuais
             personal_goals = client_data.additional_comments or "Nenhum objetivo específico mencionado."
             health_summary = state.get("financial_health_summary", "Não disponível")
             health_rec = state.get("financial_health_recommendation", "Não disponível")

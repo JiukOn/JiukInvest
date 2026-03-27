@@ -9,22 +9,41 @@ from backend.utils.llm_factory import get_llm
 from backend.utils.env_loader import AZURE_OPENAI_KEY
 from backend.prompts.system_prompts import MATH_SPECIALIST_PROMPT
 
-# Import tool modules
 import backend.tools.math_tools as math_tools
 import backend.tools.risk_calculator as risk_calc
 
 logger = logging.getLogger(__name__)
 
+TOOL_DESCRIPTIONS = {
+    "math_add": "Soma dois números.",
+    "math_subtract": "Subtrai o segundo número do primeiro.",
+    "math_multiply": "Multiplica dois números.",
+    "math_divide": "Divide o primeiro número pelo segundo.",
+    "math_remainder": "Retorna o resto da divisão.",
+    "math_percentage": "Calcula a porcentagem de uma parte em relação ao total.",
+    "math_factorial": "Calcula o fatorial de um número.",
+    "math_arithmetic_progression": "Calcula o n-ésimo termo e a soma de uma PA.",
+    "math_geometric_progression": "Calcula o n-ésimo termo e a soma de uma PG.",
+    "math_summation": "Soma uma lista de valores.",
+    "calculate_compound_interest": "Calcula montante final com juros compostos e aportes.",
+    "math_roi": "Calcula o Retorno sobre Investimento (ROI).",
+    "math_pmt": "Calcula a prestação mensal (Price).",
+    "get_market_benchmarks": "Retorna taxas SELIC, CDI, IPCA atuais.",
+    "calculate_tax_impact": "Estima o IR para ativos brasileiros.",
+    "calculate_inflation_adjustment": "Ajusta valor futuro pela inflação.",
+    "get_compound_interest_projection": "Gera série temporal da evolução do patrimônio.",
+    "get_portfolio_allocation": "Sugere pesos de alocação para os produtos selecionados.",
+    "calculate_risk_diversification": "Calcula o risco ponderado da carteira."
+}
+
 def _get_all_tools() -> List[StructuredTool]:
-    """Dynamically creates LangChain tools from the specified modules."""
     tools = []
     modules = [math_tools, risk_calc]
     
     for module in modules:
         for name, obj in inspect.getmembers(module):
             if inspect.isfunction(obj) and not name.startswith("_"):
-                # Use docstring as description
-                desc = obj.__doc__ or f"Executa a função {name}"
+                desc = TOOL_DESCRIPTIONS.get(name, f"Executa a função {name}")
                 tools.append(StructuredTool.from_function(
                     func=obj,
                     name=name,
@@ -69,10 +88,8 @@ def run_math_specialist(state: AgentState) -> dict:
         math_logs = []
         results = {}
         
-        # Tool Map for easy access
         tool_map = {t.name: t.func for t in available_tools}
         
-        # Invoke with variables
         ai_msg = (prompt | llm_with_tools).invoke({
             "name": client_data.name,
             "principal": principal,
@@ -90,23 +107,19 @@ def run_math_specialist(state: AgentState) -> dict:
                 if t_name in tool_map:
                     try:
                         res = tool_map[t_name](**t_args)
-                        # Log to frontend in real-time
                         log_msg = f"Tool Execution: {t_name}({t_args}) -> Result captured."
                         math_logs.append(log_msg)
                         logger.info(log_msg)
                         
-                        # Store specific results for the final payload
                         if t_name == "get_compound_interest_projection":
                             results["evolution_bar"] = res
                         elif t_name == "get_portfolio_allocation":
                             results["allocation_pie"] = res
                         else:
-                            # Generic log for other tools (Tax, Inflation, etc.)
                             math_logs.append(f"DEBUG [{t_name}]: {json.dumps(res, ensure_ascii=False)}")
                     except Exception as te:
                         math_logs.append(f"Error calling {t_name}: {str(te)}")
 
-        # Mandatory fallbacks if LLM forgot crucial tools
         if "evolution_bar" not in results:
             total_ret = sum(p.get("expected_annual_return", 0.0) for p in matched_products)
             avg_ret = total_ret / len(matched_products) if matched_products else 0.0
@@ -128,7 +141,7 @@ def run_math_specialist(state: AgentState) -> dict:
                 "evolution_bar": results["evolution_bar"],
                 "allocation_pie": results["allocation_pie"]
             },
-            "risk_score": client_score # Ensure it persists
+            "risk_score": client_score
         }
 
     except Exception as e:

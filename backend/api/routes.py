@@ -44,7 +44,6 @@ async def generate_report(request: CopilotRequest):
             for step in graph.stream(initial_state):
                 for node_name, node_state in step.items():
                     if node_state is None:
-                        # Log para debug em caso de falha silenciosa
                         print(f"DEBUG: Node '{node_name}' returned None in parallel flow.")
                         continue
                     

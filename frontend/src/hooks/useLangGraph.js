@@ -56,7 +56,6 @@ export const useLangGraph = () => {
 
         if (done) {
           console.log('[SSE Reader] Stream complete.');
-          // Process any remaining text in the buffer that didn't end with \n\n
           if (buffer.trim()) {
             const finalPart = buffer.trim();
             if (finalPart.startsWith('data: ')) {

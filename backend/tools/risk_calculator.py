@@ -49,7 +49,7 @@ def calculate_risk_bounds(age: int, knowledge: str, horizon_months: int, income:
     else:
         w7_val = 0.00
         w7_weight = 0
-        
+         
     total_weight = 6 + 5 + 4 + 3 + 2 + 1 + w7_weight
     weighted_sum = (w1_val*6) + (w2_val*5) + (w3_val*4) + (w4_val*3) + (w5_val*2) + (w6_val*1) + (w7_val*w7_weight)
     
