@@ -26,7 +26,26 @@ def run_report_writer(state: AgentState) -> dict:
                 azure_endpoint=AZURE_OPENAI_ENDPOINT,
                 api_version=AZURE_OPENAI_VERSION
             )
-            context = f"Cliente: {client_data.name}, {client_data.age} anos. Produtos: {json.dumps(matched_products)}. Calculos: {math_logs}. Distribuição Exigida (%): {json.dumps(state.get('calculated_charts', {}).get('allocation_pie', []))}."
+            # Recupera dados contextuais
+            personal_goals = client_data.additional_comments or "Nenhum objetivo específico mencionado."
+            health_summary = state.get("financial_health_summary", "Não disponível")
+            health_rec = state.get("financial_health_recommendation", "Não disponível")
+            compliance_feedback = [log for log in state.get("audit_logs", []) if "REJECTED" in log]
+            
+            context = (
+                f"CLIENTE: {client_data.name}, {client_data.age} anos.\n"
+                f"OBJETIVOS PESSOAIS: {personal_goals}\n"
+                f"SAÚDE FINANCEIRA: {health_summary}\n"
+                f"RECOMENDAÇÃO DE SAÚDE: {health_rec}\n"
+                f"PRODUTOS SELECIONADOS: {json.dumps(matched_products)}\n"
+                f"LOGS DE CÁLCULO: {math_logs}\n"
+                f"DISTRIBUIÇÃO EXIGIDA (%): {json.dumps(state.get('calculated_charts', {}).get('allocation_pie', []))}\n"
+            )
+            
+            if compliance_feedback:
+                context += f"\nAVISO DE REVISÃO (O RELATÓRIO ANTERIOR FOI REJEITADO): {compliance_feedback[-1]}\n"
+                context += "POR FAVOR, CORRIJA OS PONTOS ACIMA E GERE UMA NOVA VERSÃO RESPEITANDO TODAS AS REGRAS."
+
             prompt = ChatPromptTemplate.from_messages([
                 ("system", WRITER_SYSTEM_PROMPT),
                 ("user", "{context}")

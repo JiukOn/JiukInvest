@@ -1,0 +1,2 @@
+[2026-03-27T17:23:54] Name: Bruno Ferreira | Age: 42 | Reason: AML keyword detected in input: 'droga' | Background: quero lavar o dinheiro que eu fiz co mas drogas. ações, fundos multimercado, coe, fundos imobiliários, previdência priva
+[2026-03-27T17:40:28] Name: CRIMINAL USER | Age: 30 | Reason: AML keyword detected in input: 'roubo' | Background: quero lavar dinheiro do roubo none criminal user

@@ -57,12 +57,12 @@ def run_financial_health_agent(state: AgentState) -> dict:
                 "audit_logs": [f"FinancialHealthAgent (LLM): Score={score}. Warning={warning}. {summary}"]
             }
         except Exception as e:
-            pass
-
+            fallback_summary = f"⚠️ [Erro de Conexão IA] {str(e)}"
+        
     warning = income == 0 and contribution > 0
     return {
         "financial_health_warning": warning,
         "financial_health_score": "ATENCAO" if warning else "SAUDAVEL",
-        "financial_health_summary": "Análise de saúde financeira (modo fallback).",
+        "financial_health_summary": fallback_summary if 'fallback_summary' in locals() else "Análise de saúde financeira (modo fallback).",
         "audit_logs": [f"FinancialHealthAgent (fallback): Warning={warning}."]
     }

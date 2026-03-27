@@ -64,7 +64,10 @@ function App() {
                 </button>
               </div>
 
-              <ReportDisplay markdown={reportData?.markdown_text} />
+              <ReportDisplay 
+                markdown={reportData?.markdown_text} 
+                formData={formData}
+              />
 
               {(hasPieData || hasEvolutionData) && (
                 <div className="charts-grid">

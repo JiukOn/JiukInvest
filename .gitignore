@@ -33,3 +33,5 @@ MANIFEST
 .idea/
 .agents/
 .env.example
+debug/
+.debug/

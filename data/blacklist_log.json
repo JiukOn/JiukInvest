@@ -1,0 +1,16 @@
+[
+  {
+    "timestamp": "2026-03-27T17:23:54",
+    "name": "Bruno Ferreira",
+    "age": 42,
+    "reason": "AML keyword detected in input: 'droga'",
+    "background_excerpt": "quero lavar o dinheiro que eu fiz co mas drogas. ações, fundos multimercado, coe, fundos imobiliários, previdência privada bruno ferreira"
+  },
+  {
+    "timestamp": "2026-03-27T17:40:28",
+    "name": "CRIMINAL USER",
+    "age": 30,
+    "reason": "AML keyword detected in input: 'roubo'",
+    "background_excerpt": "quero lavar dinheiro do roubo none criminal user"
+  }
+]

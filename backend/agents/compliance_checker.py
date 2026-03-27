@@ -47,6 +47,7 @@ def run_compliance_checker(state: AgentState) -> dict:
             if not approved:
                 return {
                     "status_code": 406,
+                    "retry_count": state.get("retry_count", 0) + 1,
                     "audit_logs": [f"ComplianceChecker (LLM): REJECTED. {reason}. Violations: {violations}"]
                 }
 
@@ -56,10 +57,10 @@ def run_compliance_checker(state: AgentState) -> dict:
                 "audit_logs": [f"ComplianceChecker (LLM): APPROVED. {reason}"]
             }
         except Exception as e:
-            pass
+            fallback_log = f"ComplianceChecker (fallback): APPROVED [⚠️ IA Error: {str(e)}]. Standard regex checks passed."
 
     return {
         "final_report": draft,
         "status_code": 200,
-        "audit_logs": ["ComplianceChecker (fallback): APPROVED. Standard regex checks passed."]
+        "audit_logs": [fallback_log if 'fallback_log' in locals() else "ComplianceChecker (fallback): APPROVED. Standard regex checks passed."]
     }

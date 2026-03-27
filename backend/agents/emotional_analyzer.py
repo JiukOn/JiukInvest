@@ -42,7 +42,10 @@ def run_emotional_analyzer(state: AgentState) -> dict:
                     "audit_logs": [f"EmotionalAnalyzer: Stability classified as '{personal_stability}'"]
                 }
             except Exception as e:
-                return {"audit_logs": [f"EmotionalAnalyzer: Failed to extract emotional stability via LLM. Error: {str(e)}"]}
+                return {
+                    "personal_stability": "ESTAVEL", # Default fallback
+                    "audit_logs": [f"EmotionalAnalyzer: Failed to extract emotional stability via LLM. ⚠️ Error: {str(e)}"]
+                }
         except Exception as e:
             return {"audit_logs": [f"EmotionalAnalyzer: CRITICAL - Failed to initialize LLM: {str(e)}"]}
     else:

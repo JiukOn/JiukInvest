@@ -47,7 +47,7 @@ def run_demographic_auditor(state: AgentState) -> dict:
                 "audit_logs": [f"DemographicAuditor (LLM): Category={category}. {lifecycle_note}"]
             }
         except Exception as e:
-            pass
+            fallback_note = f"⚠️ [Erro de Conexão IA] {str(e)} | " + fallback_note
 
     return {
         "demographic_category": fallback_category,

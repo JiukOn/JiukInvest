@@ -1,14 +1,36 @@
+import json
+import logging
+import inspect
+from typing import Dict, Any, List
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.tools import StructuredTool
 from data.schemas.state_models import AgentState
-from backend.tools.financial_calculator import calculate_compound_interest
+from backend.utils.llm_factory import get_llm
+from backend.utils.env_loader import AZURE_OPENAI_KEY
+from backend.prompts.system_prompts import MATH_SPECIALIST_PROMPT
 
-MAX_SINGLE_ASSET_PCT = 31.0
-POUPANCA_MONTHLY_RATE = 0.005
-IBOV_MONTHLY_RATE = 0.01
+# Import tool modules
+import backend.tools.math_tools as math_tools
+import backend.tools.risk_calculator as risk_calc
 
-def _monthly_rate_from_annual(annual_rate_pct: float) -> float:
-    if annual_rate_pct <= 0:
-        return 0.0
-    return (1 + annual_rate_pct / 100.0) ** (1 / 12.0) - 1
+logger = logging.getLogger(__name__)
+
+def _get_all_tools() -> List[StructuredTool]:
+    """Dynamically creates LangChain tools from the specified modules."""
+    tools = []
+    modules = [math_tools, risk_calc]
+    
+    for module in modules:
+        for name, obj in inspect.getmembers(module):
+            if inspect.isfunction(obj) and not name.startswith("_"):
+                # Use docstring as description
+                desc = obj.__doc__ or f"Executa a função {name}"
+                tools.append(StructuredTool.from_function(
+                    func=obj,
+                    name=name,
+                    description=desc
+                ))
+    return tools
 
 def run_math_specialist(state: AgentState) -> dict:
     client_data = state.get("standardized_client_data")
@@ -24,112 +46,100 @@ def run_math_specialist(state: AgentState) -> dict:
     if not matched_products:
         return {"audit_logs": ["MathSpecialist: Aborted. No matched_products from ProfileAnalyzer."]}
 
-    math_logs = []
-    math_logs.append(f"calculate_initial_capital(value={principal})")
+    if not AZURE_OPENAI_KEY:
+        return _fallback_math_logic(principal, contribution, months, client_score, matched_products, "No API Key")
 
-    total_ret = sum(p.get("expected_annual_return", 0.0) for p in matched_products)
-    avg_ret = total_ret / len(matched_products) if matched_products else 0.0
-    monthly_rate = _monthly_rate_from_annual(avg_ret)
-    math_logs.append(f"calculate_weighted_avg_return(products={len(matched_products)}) -> annual={round(avg_ret,2)}% -> monthly_rate={round(monthly_rate*100,4)}%")
-
-    import datetime
-    start_year = datetime.datetime.now().year
-    start_month = datetime.datetime.now().month
-    month_names = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
-
-    evolution_data = []
-    current_value = principal
-    current_poupanca = principal
-    current_ibov = principal
-
-    if months <= 36:
-        for i in range(months + 1):
-            month_offset = (start_month - 1 + i) % 12
-            year_offset = start_year + (start_month - 1 + i) // 12
-            curr_str = f"{month_names[month_offset]}/{year_offset}"
-            if i > 0:
-                current_value = calculate_compound_interest(current_value, contribution, monthly_rate, 1)
-                current_poupanca = calculate_compound_interest(current_poupanca, contribution, POUPANCA_MONTHLY_RATE, 1)
-                current_ibov = calculate_compound_interest(current_ibov, contribution, IBOV_MONTHLY_RATE, 1)
-            evolution_data.append({
-                "year": curr_str,
-                "value": round(current_value, 2),
-                "value_poupanca": round(current_poupanca, 2),
-                "value_ibov": round(current_ibov, 2)
-            })
-    else:
-        years_horizon = max(1, months // 12)
-        target_dates = [0] + [i * 12 for i in range(1, years_horizon + 1)]
-        if target_dates[-1] != months:
-            target_dates.append(months)
-
-        current_time = 0
-        for m_tick in target_dates:
-            diff = m_tick - current_time
-            if diff > 0:
-                current_value = calculate_compound_interest(current_value, contribution, monthly_rate, diff)
-                current_poupanca = calculate_compound_interest(current_poupanca, contribution, POUPANCA_MONTHLY_RATE, diff)
-                current_ibov = calculate_compound_interest(current_ibov, contribution, IBOV_MONTHLY_RATE, diff)
-            curr_y = start_year + (m_tick // 12)
-            evolution_data.append({
-                "year": str(curr_y),
-                "value": round(current_value, 2),
-                "value_poupanca": round(current_poupanca, 2),
-                "value_ibov": round(current_ibov, 2)
-            })
-            current_time = m_tick
-
-    final_amount = calculate_compound_interest(principal, contribution, monthly_rate, months)
-    math_logs.append(f"calculate_compound_interest(principal={principal}, contribution={contribution}, rate={round(monthly_rate*100,4)}%/mo, months={months}) -> {round(final_amount, 2)}")
-
-    raw_weights = []
-    for p in matched_products:
-        p_risk = p.get("risk_score", 0.5)
-        affinity = 1.0 - abs(p_risk - client_score)
-        w = pow(max(affinity, 0.01), 4.0)
-        raw_weights.append(w)
-
-    total_w = sum(raw_weights) if raw_weights else 1.0
-    allocation_data = []
-    accum_pct = 0.0
-
-    for i, p in enumerate(matched_products):
-        if i == len(matched_products) - 1:
-            pct = round(100.0 - accum_pct, 2)
-        else:
-            pct = round((raw_weights[i] / total_w) * 100.0, 2)
-        accum_pct += pct
-        allocation_data.append({
-            "name": p.get("name", "Ativo"),
-            "value": pct,
-            "value_brl": round((pct / 100.0) * principal, 2)
+    try:
+        llm = get_llm(temperature=0)
+        available_tools = _get_all_tools()
+        llm_with_tools = llm.bind_tools(available_tools)
+        
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", MATH_SPECIALIST_PROMPT),
+            ("user", (
+                "Cliente: {name}\n"
+                "Capital Inicial: R$ {principal}\n"
+                "Aporte Mensal: R$ {contribution}\n"
+                "Prazo: {months} meses\n"
+                "Score de Risco do Cliente: {score}\n"
+                "Produtos Disponíveis: {products}"
+            ))
+        ])
+        
+        math_logs = []
+        results = {}
+        
+        # Tool Map for easy access
+        tool_map = {t.name: t.func for t in available_tools}
+        
+        # Invoke with variables
+        ai_msg = (prompt | llm_with_tools).invoke({
+            "name": client_data.name,
+            "principal": principal,
+            "contribution": contribution,
+            "months": months,
+            "score": client_score,
+            "products": json.dumps(matched_products, ensure_ascii=False)
         })
-        math_logs.append(f"calculate_weighted_allocation({p.get('name','?')}) -> affinity={round(1-abs(p.get('risk_score',0.5)-client_score),3)}, weight={round(raw_weights[i],4)} -> {pct}% = R$ {round((pct/100.0)*principal,2)}")
+        
+        if ai_msg.tool_calls:
+            for tool_call in ai_msg.tool_calls:
+                t_name = tool_call["name"]
+                t_args = tool_call["args"]
+                
+                if t_name in tool_map:
+                    try:
+                        res = tool_map[t_name](**t_args)
+                        # Log to frontend in real-time
+                        log_msg = f"Tool Execution: {t_name}({t_args}) -> Result captured."
+                        math_logs.append(log_msg)
+                        logger.info(log_msg)
+                        
+                        # Store specific results for the final payload
+                        if t_name == "get_compound_interest_projection":
+                            results["evolution_bar"] = res
+                        elif t_name == "get_portfolio_allocation":
+                            results["allocation_pie"] = res
+                        else:
+                            # Generic log for other tools (Tax, Inflation, etc.)
+                            math_logs.append(f"DEBUG [{t_name}]: {json.dumps(res, ensure_ascii=False)}")
+                    except Exception as te:
+                        math_logs.append(f"Error calling {t_name}: {str(te)}")
 
-    capped_items = []
-    for item in allocation_data:
-        if item["value"] > MAX_SINGLE_ASSET_PCT:
-            excess = item["value"] - MAX_SINGLE_ASSET_PCT
-            item["value"] = MAX_SINGLE_ASSET_PCT
-            item["value_brl"] = round((MAX_SINGLE_ASSET_PCT / 100.0) * principal, 2)
-            others = [x for x in allocation_data if x["name"] != item["name"]]
-            if others:
-                redistrib_per = round(excess / len(others), 4)
-                for o in others:
-                    o["value"] = round(o["value"] + redistrib_per, 2)
-                    o["value_brl"] = round((o["value"] / 100.0) * principal, 2)
-            capped_items.append(item["name"])
-            math_logs.append(f"apply_anti_concentration_cap(asset='{item['name']}', cap={MAX_SINGLE_ASSET_PCT}%, excess={round(excess,2)}% redistributed among {len(others)} assets)")
+        # Mandatory fallbacks if LLM forgot crucial tools
+        if "evolution_bar" not in results:
+            total_ret = sum(p.get("expected_annual_return", 0.0) for p in matched_products)
+            avg_ret = total_ret / len(matched_products) if matched_products else 0.0
+            results["evolution_bar"] = math_tools.get_compound_interest_projection(principal, contribution, avg_ret, months)
+            math_logs.append("Auto-Fallback: get_compound_interest_projection executed.")
+            
+        if "allocation_pie" not in results:
+            results["allocation_pie"] = math_tools.get_portfolio_allocation(principal, client_score, matched_products)
+            math_logs.append("Auto-Fallback: get_portfolio_allocation executed.")
 
-    cap_log = f"Anti-concentration cap applied to: {capped_items}. " if capped_items else "No concentration cap triggered. "
-
-    return {
-        "math_operations_log": math_logs,
-        "audit_logs": [
-            f"MathSpecialist: Portfolio calculated. {cap_log}Final projected value: R$ {round(final_amount, 2)} over {months} months at {round(avg_ret, 2)}% p.a."
-        ],
-        "calculated_charts": {
-            "evolution_bar": evolution_data,
-            "allocation_pie": allocation_data
+        final_val = results["evolution_bar"][-1]["value"] if results["evolution_bar"] else 0.0
+        
+        return {
+            "math_operations_log": math_logs,
+            "audit_logs": [
+                f"MathSpecialist (LLM): {len(math_logs)} operações matemáticas registradas. Valor final: R$ {round(final_val, 2)}."
+            ],
+            "calculated_charts": {
+                "evolution_bar": results["evolution_bar"],
+                "allocation_pie": results["allocation_pie"]
+            },
+            "risk_score": client_score # Ensure it persists
         }
+
+    except Exception as e:
+        logger.error(f"Error in MathSpecialist: {e}")
+        return _fallback_math_logic(principal, contribution, months, client_score, matched_products, str(e))
+
+def _fallback_math_logic(principal, contribution, months, client_score, matched_products, error_msg) -> dict:
+    evolution = math_tools.get_compound_interest_projection(principal, contribution, 0.0, months)
+    allocation = math_tools.get_portfolio_allocation(principal, client_score, matched_products)
+    return {
+        "math_operations_log": [f"Fallback: {error_msg}"],
+        "audit_logs": [f"MathSpecialist (Error Fallback): {error_msg}"],
+        "calculated_charts": {"evolution_bar": evolution, "allocation_pie": allocation}
     }

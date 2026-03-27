@@ -277,6 +277,12 @@ python backend/main.py
 # Servidor disponível em: http://localhost:8000
 ```
 
+```powershell
+$env:PYTHONPATH = (Get-Item .).FullName
+
+.\.venv\Scripts\python.exe backend/main.py
+```
+
 > O frontend deve ser iniciado separadamente em `frontend/` com `npm run dev`.
 
 ---

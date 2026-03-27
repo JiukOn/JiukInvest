@@ -44,8 +44,33 @@ export const useLangGraph = () => {
       let buffer = '';
 
       while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
+        let value, done;
+        try {
+          const result = await reader.read();
+          value = result.value;
+          done = result.done;
+        } catch (readError) {
+          console.error('[SSE Reader] Stream read error:', readError);
+          throw new Error(`Erro ao ler o fluxo de dados: ${readError.message}`);
+        }
+
+        if (done) {
+          console.log('[SSE Reader] Stream complete.');
+          // Process any remaining text in the buffer that didn't end with \n\n
+          if (buffer.trim()) {
+            const finalPart = buffer.trim();
+            if (finalPart.startsWith('data: ')) {
+              const data = finalPart.replace('data: ', '');
+              try {
+                const parsed = JSON.parse(data);
+                processMessage(parsed);
+              } catch (e) {
+                console.warn('[SSE Parser] Failed to parse final buffer:', e);
+              }
+            }
+          }
+          break;
+        }
 
         buffer += decoder.decode(value, { stream: true });
         const parts = buffer.split('\n\n');
@@ -53,23 +78,31 @@ export const useLangGraph = () => {
 
         for (const part of parts) {
           const line = part.trim();
-          if (!line.includes('{')) continue;
+          if (!line || !line.includes('{')) continue;
 
           try {
             const jsonStr = line.substring(line.indexOf('{'));
             const message = JSON.parse(jsonStr);
 
             if (message.type === 'log') {
+              console.log(`%c[SSE Log] ${message.agent}: ${message.content}`, 'color: #8b5cf6');
               const stepIdx = SSE_STEP_MAP[message.agent];
               if (stepIdx !== undefined) {
                 setCurrentStepIndex(stepIdx);
               }
 
             } else if (message.type === 'result') {
+              console.log('%c[SSE Result] Received successful payload', 'color: #10b981', message);
               setCurrentStepIndex(9);
 
               if (message.status === 'success') {
-                const chartData = message.charts || message.report?.charts || { allocation_pie: [], evolution_bar: [] };
+                const hasTopCharts = message.charts && 
+                                    (message.charts.allocation_pie?.length > 0 || 
+                                     message.charts.evolution_bar?.length > 0);
+                
+                const chartData = hasTopCharts ? message.charts : 
+                                 (message.report?.charts || { allocation_pie: [], evolution_bar: [] });
+                
                 setReportData({
                   ...message.report,
                   charts: chartData,
@@ -77,6 +110,7 @@ export const useLangGraph = () => {
                 });
 
               } else if (BLOCKED_STATUSES.has(message.status)) {
+                // ... (rest of blocked status logic)
                 const statusLabels = {
                   blocked: '🔒 Acesso Bloqueado (AML/Blacklist)',
                   restricted: '🔞 Cliente Não Elegível',
@@ -100,19 +134,22 @@ export const useLangGraph = () => {
               }
 
             } else if (message.type === 'error') {
-              throw new Error(message.detail || 'Erro desconhecido do servidor.');
+              console.error('[SSE Error Agent]', message);
+              throw new Error(message.detail || 'Erro interno do agente de IA.');
             }
-          } catch (_) { /* ignore individual parse errors */ }
+          } catch (parseErr) {
+            console.warn('[SSE Parser] Failed to parse message chunk:', parseErr, line);
+          }
         }
       }
 
       setShowResults(true);
     } catch (error) {
-      setReportData(buildBlockedReport(
-        `## Erro de Conexão\n\nFalha ao comunicar com o servidor JiukInvest.\n\n**Detalhes:** ${error.message}\n\n> Verifique se o backend está em execução em \`localhost:8000\`.`
-      ));
+      console.error('[useLangGraph] Execution failed:', error);
+      setReportData(null); // This triggers the fallback state in ReportDisplay
       setShowResults(true);
-    } finally {
+    }
+ finally {
       setIsGenerating(false);
     }
   }, []);

@@ -61,7 +61,7 @@ export const fetchMockProfiles = async () => {
 };
 
 export const generateReport = async (payload) => {
-  return await fetch('http://localhost:8000/api/copilot/generate', {
+  return await fetch('http://127.0.0.1:8000/api/copilot/generate', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

@@ -180,3 +180,68 @@
   }
   .print-only-header { display: block !important; }
 }
+
+/* Fallback / Error State */
+.fallback-state {
+  border: 1px dashed var(--danger);
+  background: rgba(239, 68, 68, 0.03);
+}
+
+.error-header {
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.error-icon {
+  color: var(--danger);
+}
+
+.error-body {
+  padding: 1rem 0;
+}
+
+.error-msg {
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.captured-data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  background: var(--bg-surface-elevated);
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-subtle);
+}
+
+.data-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.data-item svg {
+  color: var(--accent-primary);
+}
+
+.error-instructions {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.error-code {
+  color: var(--danger);
+  font-family: monospace;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .captured-data-grid {
+    grid-template-columns: 1fr;
+  }
+}

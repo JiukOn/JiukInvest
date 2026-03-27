@@ -31,6 +31,17 @@ def run_profile_analyzer(state: AgentState) -> dict:
     risk_score = 0.29
     personal_stability = state.get("personal_stability", "SEM INFORMACAO")
     
+    # Guardrails Check (Parallel Flow Safety)
+    is_blacklisted = state.get("is_blacklisted", False)
+    demographic_cat = state.get("demographic_category", "ADULT")
+    health_score = state.get("financial_health_score", "SAUDAVEL")
+    
+    if is_blacklisted or demographic_cat in ["CHILD", "TEEN"] or health_score == "CRITICO":
+        return {
+            "status_code": 403,
+            "audit_logs": ["ProfileAnalyzer: Execution skipped due to parallel guardrail trigger."]
+        }
+    
     if AZURE_OPENAI_KEY:
         try:
             llm = AzureChatOpenAI(
@@ -45,6 +56,9 @@ def run_profile_analyzer(state: AgentState) -> dict:
             low_score, high_score = calculate_risk_bounds(
                 age, knowledge, horizon, income, contribution, accepted_assets, past_investments, personal_stability
             )
+            
+            audit_logs = []
+            error_prefix = ""
             
             prompt = ChatPromptTemplate.from_messages([
                 ("system", STRATEGIST_SYSTEM_PROMPT),
@@ -61,14 +75,18 @@ def run_profile_analyzer(state: AgentState) -> dict:
                     "comments": comments
                 })
                 risk_score = float(response.content.strip())
-            except ValueError as ve:
-                return {"audit_logs": [f"ProfileAnalyzer: LLM returned non-float response for Risk Score. Error: {str(ve)}"]}
+            except Exception as e:
+                error_prefix = f"⚠️ [Erro de Conexão IA: {str(e)}]"
+                risk_score = 0.5 # Moderado padrão
+                audit_logs.append(f"ProfileAnalyzer: Failed to get risk score from LLM. Using fallback=0.5. Error: {str(e)}")
         except Exception as e:
-            return {"audit_logs": [f"ProfileAnalyzer: CRITICAL - Failed to call LLM: {str(e)}"]}
+            error_prefix = "⚠️ [Erro de Inicialização IA]"
+            risk_score = 0.5
+            audit_logs.append(f"ProfileAnalyzer: CRITICAL - Failed to setup LLM. Using fallback=0.5. Error: {str(e)}")
     else:
-        return {
-            "audit_logs": ["ProfileAnalyzer: Aborted. Missing AZURE_OPENAI_KEY in .env."]
-        }
+        error_prefix = "ℹ️ [Modo Offline]"
+        risk_score = 0.5
+        audit_logs.append("ProfileAnalyzer: Running in offline mode (AZURE_OPENAI_KEY not found).")
             
     all_products = get_products_by_risk(risk_score)
     seen_names = set()
@@ -83,5 +101,5 @@ def run_profile_analyzer(state: AgentState) -> dict:
     return {
         "matched_products": products,
         "risk_score": risk_score,
-        "audit_logs": [f"ProfileAnalyzer: Assigned risk score {risk_score}. Retrieved {len(products)} products (Top 5 selected). Thresholds: Conservador (<=0.05), Moderado (0.06-0.29), Arrojado (>=0.30)."]
+        "audit_logs": [f"ProfileAnalyzer: Assigned risk score {risk_score}. Retrieved {len(products)} products (Top 5 selected). Thresholds: Conservador (<=0.10), Moderado (0.11-0.40), Arrojado (>=0.41)."]
     }
