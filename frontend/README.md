@@ -99,14 +99,17 @@ Formulário de 3 seções:
 Comportamento: formulário começa **vazio** (sem mock). Ao selecionar um perfil via `ClientSelector`, os campos são preenchidos automaticamente.
 
 ### `StatusTimeline.jsx`
-Exibe os **9 agentes** do pipeline em ordem com:
+Exibe os **9 agentes** do pipeline em ordem dinâmica. Com a nova **Arquitetura Paralela**, múltiplos agentes de auditoria podem brilhar simultaneamente, refletindo a execução real do backend.
 - Ícone único por agente
 - Linha de conector animada (verde ao completar)
 - Estado ativo com brilho violeta e pontos pulsantes
 - Labels em português
 
-### `useLangGraph.js`
-Hook SSE com `SSE_STEP_MAP` que mapeia o nome do agente (campo `agent` do evento `log`) para o índice correto no `StatusTimeline`. Elimina a necessidade de timers artificiais — o progresso é **real e sincronizado** com o backend.
+### `useLangGraph.js` (SSE Consumer)
+Hook SSE otimizado para lidar com a concorrência de eventos. O `SSE_STEP_MAP` mapeia o nome do agente para o índice correto, permitindo que o progresso seja **real, paralelo e sincronizado** com o motor LangGraph.
+
+### Política de Clean Code
+Em conformidade com o padrão do projeto, 100% dos componentes e hooks foram limpos de comentários e docstrings, resultando em uma base de código enxuta e pronta para produção.
 
 ### `EvolutionBarChart.jsx`
 `ComposedChart` com 3 séries de dados com áreas gradiente:

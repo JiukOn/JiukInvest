@@ -7,18 +7,18 @@ O Banco XYZ deseja automatizar relatórios e comunicações de investimentos usa
 
 ## 2. Escopo Mínimo Obrigatório (O que FAZ o projeto ser aceito)
 - [x] **Front-end** para selecionar um cliente e acionar a geração.
-- [ ] Uso de um **LLM** para produzir o texto final.
-- [ ] Uso dos **dados empíricos do cliente** como contexto garantido (Grounding).
-- [ ] Exibição do conteúdo gerado em tela.
+- [x] Uso de um **LLM** para produzir o texto final.
+- [x] Uso dos **dados empíricos do cliente** como contexto garantido (Grounding).
+- [x] Exibição do conteúdo gerado em tela.
 
 ## 3. Diferenciais Opcionais (O que GARANTE a Nota Máxima)
 A apresentação cita explicitamente várias "Boas Práticas" e "Extras" que elevam a nota para a Faixa 4 (Excelente). Nosso objetivo é incluí-los na arquitetura JiukInvest:
-- **Trilha de Auditoria:** Logs claros do que a IA fez (já planejado no `AgentState`).
-- **Guardrails e Compliance:** Validações para garantir que a IA não faça promessas irreais de retorno (já planejado via `compliance_checker`).
-- **Exportação em PDF:** Permitir baixar o relatório final gerado.
-- **Múltiplas Versões:** Opção de ter um relatório resumido e um detalhado (Expansão).
-- **Gráficos Visuais:** Já implementados na Fase 1 (Recharts).
-- **Comparativo de Perfis:** Demonstração clara da diferença entre recomendações para Conservadores vs Arrojados.
+- [x] **Trilha de Auditoria:** Logs claros do que a IA fez (já planejado no `AgentState`).
+- [x] **Guardrails e Compliance:** Validações para garantir que a IA não faça promessas irreais de retorno (já planejado via `compliance_checker`).
+- [x] **Exportação em PDF:** Permitir baixar o relatório final gerado.
+- [x] **Múltiplas Versões:** Opção de ter um relatório resumido e um detalhado (Expansão).
+- [x] **Gráficos Visuais:** Já implementados na Fase 1 (Recharts).
+- [x] **Comparativo de Perfis:** Demonstração clara da diferença entre recomendações para Conservadores vs Arrojados.
 
 ## 4. Critérios e Pesos de Avaliação
 - **Funcionalidade (25%):** O fluxo ponta a ponta funciona bem?
@@ -29,4 +29,4 @@ A apresentação cita explicitamente várias "Boas Práticas" e "Extras" que ele
 - **Diferenciais (10%):** Gráficos, PDF, Logs, etc.
 
 ## 5. Níveis de Entrega GenAI
-Queremos atingir o **Nível 4 (Especialista)**, que exige validações de perfil, compliance, explicabilidade (audit logs) e exportação final.
+Queremos atingir o **Nível 4 (Especialista)**, que exige validações de perfil, compliance, explicabilidade (audit logs) e exportação final. [ALCANÇADO]

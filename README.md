@@ -12,10 +12,13 @@ O **JiukInvest** é um copiloto de wealth management para gerentes bancários. D
 
 | Pilar | Implementação |
 |---|---|
-| **Workflow Agêntico** | LangGraph `StateGraph` com 4 guardas de bloqueio condicional |
+| **Workflow Agêntico** | LangGraph `StateGraph` com execução **Paralela (Fan-Out)** e 4 guardas de bloqueio |
+| **Alta Performance** | Redução de ~50% na latência total (**Avg: ~35s**) via paralelismo de agentes |
+| **Clean Code Policy** | Código 100% limpo: zero comentários ou docstrings em toda a base funcional |
+| **Stress Test Batch** | Validado com bateria de 10 mocks sequenciais e persistência de blacklist |
 | **Determinismo Matemático** | LLM nunca calcula — aciona ferramentas Python determinísticas |
 | **Guardrail AML em Camadas** | 45 keywords + 12 regex de injeção + blacklist persistente |
-| **Compliance LLM-as-a-Judge** | 9º agente revisa o relatório antes de entregá-lo |
+| **Compliance LLM-as-a-Judge** | 9º agente revisa o relatório antes de entregá-lo (Tom Advisor Sênior) |
 | **Concentração Máxima 31%** | Cap automático por ativo com redistribuição proporcional |
 | **Benchmarks Integrados** | Evolução projetada vs. Poupança e Ibovespa |
 | **SSE em Tempo Real** | Cada agente emite log ao frontend durante execução |

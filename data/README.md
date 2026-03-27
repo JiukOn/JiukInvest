@@ -87,7 +87,7 @@ class EvolutionData(BaseModel):
 
 ## 🗂️ `/mocks/product_catalog.json` — Catálogo de Produtos
 
-Arquivo JSON com **18 produtos financeiros** estruturados. Consumido pelo `investment_api_mock.py` para seleção dos produtos elegíveis baseada no `risk_score` do cliente.
+Arquivo JSON com **38+ produtos financeiros** estruturados (expandido para cobrir todas as variantes de risco). Consumido pelo `investment_api_mock.py` para seleção baseada no `risk_score`.
 
 ### Estrutura de cada produto
 
@@ -104,12 +104,11 @@ Arquivo JSON com **18 produtos financeiros** estruturados. Consumido pelo `inves
 }
 ```
 
-### Regras de Filtragem
-
-- `risk_score > 0.90` → produto automaticamente excluído (excessivamente especulativo)
-- `risk_score <= client_risk_score` → produtos elegíveis para o cliente
-- Top 5 selecionados por pontuação de **afinidade** com o perfil do cliente
-- **Deduplicação** por nome antes do Top 5 — evita produtos com nomes repetidos
+### Regras de Filtragem e Segurança
+- **Paralelismo AML**: O `ContextAnalyzer` opera em paralelo com outros auditores. Ao detectar uma violação, ele encerra o fluxo global e grava instantaneamente na blacklist.
+- **Persistent Hardening**: Uma vez na blacklist, o cliente (por nome normalizado) é bloqueado em todas as submissões futuras, mesmo após reinicialização do servidor, graças à persistência dual (JSON/TXT).
+- **Limite de Concentração**: O sistema impõe um teto de 31% por ativo, forçando a diversificação real.
+- **Catalog Grounding**: A IA está restrita aos 38 ativos do catálogo; qualquer tentativa de sugerir ativos externos é interceptada no `ComplianceChecker`.
 
 ### Distribuição de Risco no Catálogo
 
